@@ -31,7 +31,6 @@ public:
 protected:
     unsigned ef_;
 };
-
 }
 
 #endif //HNSWQUERY_H
