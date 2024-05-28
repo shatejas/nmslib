@@ -15,6 +15,7 @@
 #ifndef _QUERY_CREATOR_H_
 #define _QUERY_CREATOR_H_
 
+#include "hnswquery.h"
 #include "rangequery.h"
 #include "knnquery.h"
 
@@ -26,7 +27,7 @@ class RangeCreator {
 public:
   RangeCreator(dist_t radius) : radius_(radius){}
   RangeQuery<dist_t>* operator()(const Space<dist_t>& space,
-                                 const Object* query_object) const {
+                                 const Object* query_object, const size_t ef = -1) const {
     return new RangeQuery<dist_t>(space, query_object, radius_);
   }
   std::string ParamsForPrint() const {
@@ -40,9 +41,13 @@ public:
 template <typename dist_t>
 class KNNCreator {
 public:
-  KNNCreator(size_t K, float eps) : K_(K), eps_(eps) {}
+  KNNCreator(size_t K, float eps, size_t ef = -1) : K_(K), eps_(eps) {}
+
   KNNQuery<dist_t>* operator()(const Space<dist_t>& space,
-                               const Object* query_object) const {
+                               const Object* query_object, const size_t ef = -1) const {
+    if (ef != -1) {
+      return dynamic_cast<KNNQuery<dist_t> *>(new HNSWQuery<dist_t>(space, query_object, K_, eps_, ef));
+    }
     return new KNNQuery<dist_t>(space, query_object, K_, eps_);
   }
 

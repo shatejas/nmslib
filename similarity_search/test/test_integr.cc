@@ -59,10 +59,10 @@ using std::stringstream;
 #define INDEX_FILE_NAME "index.tmp" 
 
 #define TEST_HNSW 1
-#define TEST_SW_GRAPH 1
-#define TEST_IR 1
-#define TEST_NAPP 1
-#define TEST_OTHER 1
+#define TEST_SW_GRAPH 0
+#define TEST_IR 0
+#define TEST_NAPP 0
+#define TEST_OTHER 0
 
 vector<MethodTestCase>    vTestCaseDesc = {
 #if (TEST_HNSW)

@@ -42,6 +42,7 @@
 #include "meta_analysis.h"
 #include "query_creator.h"
 #include "thread_pool.h"
+#include "hnswquery.h"
 
 namespace similarity {
 
@@ -179,10 +180,19 @@ public:
 
         wtm.reset();
 
+        //Its hard to add additional query parameter for creating hnsw query
+        // This makes sure both code paths are hit with the test_integr.cc
+        size_t ef = -1;
+        int useHNSWQuery = rand() / 2;
+        if (useHNSWQuery) {
+          AnyParamManager any_param_manager(qtp);
+          any_param_manager.GetParamOptional("ef", ef, -1);
+        }
+
         for (size_t q = 0; q < numquery; ++q) {
           if ((q % ThreadTestQty) == QueryPart) {
             unique_ptr<QueryType> query(QueryCreator(config.GetSpace(), 
-                                        config.GetQueryObjects()[q]));
+                                        config.GetQueryObjects()[q], ef));
             uint64_t  t1 = wtm.split();
             Method.Search(query.get());
             uint64_t  t2 = wtm.split();
